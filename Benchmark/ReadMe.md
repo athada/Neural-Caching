@@ -61,7 +61,7 @@ tensorboard logs the file in certain specifc directiry strucuture.
 Before we can get the detaisl of all the  runs in single folder we need to restrucre the logs directory using `restruct.py`. Once restructred, the logs of the profiling tools can be visualized with Tensorboard. After restructing, we'll have this strcutre.
 ```
 ./logs
-└── 2025-02[05144351-05154802]
+└── 2025020514-4351-4802
     └── plugins
         └── profile
             ├── Image-Cache-CPU-1
@@ -83,5 +83,7 @@ Before we can get the detaisl of all the  runs in single folder we need to restr
 ```
 Now tensorboard can be initilized in terminal at `./logs/025-02[05144351-05154802]` direcitry using below command:
 ```
-tensorbaord --logsdir ./logs/025-02[05144351-05154802]
+tensorbaord --logsdir ./logs/2025020514-4351-4802
 ```
+
+**BugFix**: The pathname after directory restructuring should not contain `[` otheriwse after launchign the tensorboard, the profile will show hostname as`default` instead of original hostname somthing like `C17586`. Due to this bug the runs will be listed under Profiler tab but the data will not laod up.
