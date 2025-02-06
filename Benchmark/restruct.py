@@ -22,7 +22,12 @@ def extract_timestamp(path):
     except ValueError:
         return None
 
-def restructure_logs(root_dir):
+def get_dir_name(t1, t2):
+    """Renames the directory based on the timestamp of the runs"""
+    common = common = ''.join([x for x, y in zip(list(t1), list(t2)) if x == y])
+    return f"{common}-{t1[len(common):]}-{t2[len(common):]}"
+    
+def restructure_logs(root_dir, verbose=False):
     """Restructure log directories safely."""
     if is_protected_path(root_dir):
         print(f"ERROR: The specified path '{root_dir}' is a protected system directory! Aborting.")
@@ -45,11 +50,11 @@ def restructure_logs(root_dir):
         print("No timestamps found in the directory.")
         return
     
-    min_timestamp = min(all_timestamps)
-    max_timestamp = max(all_timestamps)
+    min_timestamp = str(min(all_timestamps))
+    max_timestamp = str(max(all_timestamps))
     
     # Define new directory path
-    new_parent_folder = f"{str(min_timestamp)[:4]}-{str(min_timestamp)[4:6]}[{str(min_timestamp)[6:]}-{str(max_timestamp)[6:]}]"
+    new_parent_folder = get_dir_name(min_timestamp, max_timestamp)
     new_root = root_path / new_parent_folder
     new_profile_path = new_root / "plugins" / "profile"
     new_profile_path.mkdir(parents=True, exist_ok=True)
@@ -57,7 +62,8 @@ def restructure_logs(root_dir):
     for pb_file in root_path.rglob("*.pb"):
         parts = pb_file.parts
         if len(parts) < 8:
-            print(f"Skipping malformed path: {pb_file}")
+            if verbose:
+                print(f"Skipping malformed path: {pb_file}")
             continue
         
         data, cache, device, batch, file_name = parts[-8], parts[-7], parts[-6], parts[-5], parts[-1]
