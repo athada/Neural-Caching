@@ -177,5 +177,4 @@ def test_cached_conv2d(args):
 if __name__ == "__main__":
     args = parse_args()
     test_cached_conv2d(args)
-
     test_cached_conv2d()
